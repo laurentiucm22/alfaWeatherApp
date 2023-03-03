@@ -8,7 +8,7 @@ const geoApiOptions = {
 };
 const GEO_BASE_URL = "https://wft-geo-db.p.rapidapi.com/v1/geo";
 
-export const fetchGeoLocationData = async (inputValue) => {
+export const fetchGeoLocationData = async (inputValue = "") => {
   let response;
 
   if (inputValue !== "") {
@@ -16,8 +16,7 @@ export const fetchGeoLocationData = async (inputValue) => {
 
     try {
       const data = await fetch(GEO_API_URL, geoApiOptions);
-      if (!data) return;
-
+      if (!data || !data.ok) return;
       response = await data.json();
     } catch (err) {
       console.warn(err);
@@ -59,16 +58,31 @@ const currentWeatherApiOptions = {
 const CURRENT_WEATHER_BASE_URL =
   "https://weather-by-api-ninjas.p.rapidapi.com/v1/weather";
 
-export const fetchCurrentWeatherData = (cityCords) => {
-  const CURRENT_WEATHER_URL = (lat, lon) =>
-    `${CURRENT_WEATHER_BASE_URL}?lat=${lat}&lon=${lon}`;
+export const fetchCurrentWeatherData = async (cords = {}) => {
+  if (cords) {
+    const cityName = cords.city;
+    const CURRENT_WEATHER_URL = `${CURRENT_WEATHER_BASE_URL}?lat=${cords.lat}&lon=${cords.lon}`;
 
-  if (cityCords) {
-    const getCoordinates = cityCords.map(({ city, lat, lon }) => {
-      return console.log("Break");
-    });
-    return getCoordinates;
+    let response;
+
+    try {
+      const data = await fetch(CURRENT_WEATHER_URL, currentWeatherApiOptions);
+
+      if (!data.ok) throw new Error(`${data.status}`);
+
+      response = await data.json();
+
+      const transformedDataObj = {
+        ...response,
+        cityName,
+      };
+
+      return transformedDataObj;
+    } catch (err) {
+      console.warn(err);
+    }
   }
   return;
 };
+
 fetchCurrentWeatherData();

@@ -13,7 +13,7 @@ const App = () => {
       }}
       className="relative h-screen text-white bg-fixed bg-center bg-no-repeat bg-cover bg-slate-200"
     >
-      <Wrapper style={{ backgroundColor: "rgba(25, 195, 251, 0.3)" }}>
+      <Wrapper style={{ backgroundColor: "rgba(25, 195, 251, 0.4)" }}>
         <Routes>
           <Route exact path="/" element={<StartPage />} />
           <Route path="/current-weather" element={<WeatherPage />} />

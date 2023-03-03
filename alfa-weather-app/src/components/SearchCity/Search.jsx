@@ -32,12 +32,18 @@ const Search = () => {
     }
   }, [searchValue]);
 
-  const handleWeatherData = (city) => {
-    if (city.length > 0) {
-      setSearchValue("");
-      setGeoLocationData([]);
+  const onSelectedCity = (selectedCity) => {
+    setSearchValue("");
+    setGeoLocationData([]);
+
+    if (selectedCity.length > 0) {
       navigate("current-weather");
-      fetchCurrentWeatherData(city);
+
+      // prettier-ignore
+      const getCoordinates = selectedCity
+        .map(({ id = 0, lat = 1.1, lon = 1.1, city = "Your city" }) => ({id, lat, lon, city,})).find(({ id }) => id);
+
+      fetchCurrentWeatherData(getCoordinates);
     }
     return;
   };
@@ -48,7 +54,7 @@ const Search = () => {
 
       {geoLocationData.length > 0 ? (
         <SearchResults
-          handleWeatherData={handleWeatherData}
+          onSelectedCity={onSelectedCity}
           geoLocationData={geoLocationData}
           error={error}
         />

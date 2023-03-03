@@ -2,7 +2,7 @@ import React from "react";
 import Button from "../../UI/Button";
 import loaderIcon from "../../assets/images/icons-loading.png";
 
-const SearchResults = ({ geoLocationData, error, handleWeatherData }) => {
+const SearchResults = ({ geoLocationData, error, onSelectedCity }) => {
   return (
     <ul className="w-full">
       <li className="flex flex-col list-none bg-blue-500 rounded-b-md border-stone-500">
@@ -18,8 +18,8 @@ const SearchResults = ({ geoLocationData, error, handleWeatherData }) => {
             return (
               <Button
                 key={id}
-                className="p-1 font-bold text-left hover:bg-blue-200 hover:text-black text-md md:text-lg"
-                onClick={() => handleWeatherData(geoLocationData)}
+                className="px-2 py-1 font-medium text-left hover:bg-blue-300 hover:text-black text-md md:text-lg"
+                onClick={() => onSelectedCity(geoLocationData)}
               >
                 {`${city}, ${country} ${countryCode}`}
               </Button>
