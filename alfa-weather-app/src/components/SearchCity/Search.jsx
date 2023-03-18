@@ -9,50 +9,49 @@ import SearchForm from "./SearchForm";
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
   const [geoLocationData, setGeoLocationData] = useState([]);
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (searchValue === "") {
+  const handleFetchLocationData = async (searchValue) => {
+    try {
       setError(false);
-      setGeoLocationData([]);
-      return;
-    } else {
+
+      await fetchGeoLocationData(searchValue).then((city) => {
+        setGeoLocationData(city);
+      });
+    } catch (err) {
       setError(true);
-      const debounceTime = setTimeout(() => {
-        fetchGeoLocationData(searchValue).then((city) => {
-          setGeoLocationData(city);
-          setError(false);
-        });
-      }, 600);
-      return () => {
-        clearTimeout(debounceTime);
-        setError(true);
-      };
     }
+  };
+
+  useEffect(() => {
+    handleFetchLocationData(searchValue);
   }, [searchValue]);
 
-  const onSelectedCity = (selectedCity) => {
+  const onSelectedCity = async (selectedCity) => {
     setSearchValue("");
     setGeoLocationData([]);
 
-    if (selectedCity.length > 0) {
+    try {
+      const { lat, lon, city } = selectedCity;
+      console.log(lat, lon, city);
+      await fetchCurrentWeatherData({
+        ...(lat && { lat }),
+        ...(lon && { lon }),
+        ...(city && { city }),
+      });
+    } catch (err) {
+      setError(true);
+    } finally {
       navigate("current-weather");
-
-      // prettier-ignore
-      const getCoordinates = selectedCity
-        .map(({ id = 0, lat = 1.1, lon = 1.1, city = "Your city" }) => ({id, lat, lon, city,})).find(({ id }) => id);
-
-      fetchCurrentWeatherData(getCoordinates);
     }
-    return;
   };
 
   return (
     <Wrapper className="flex flex-col items-center justify-center custome-form md:w-96">
       <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
 
-      {geoLocationData.length > 0 ? (
+      {geoLocationData?.length > 0 ? (
         <SearchResults
           onSelectedCity={onSelectedCity}
           geoLocationData={geoLocationData}

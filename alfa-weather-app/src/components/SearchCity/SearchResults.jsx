@@ -14,12 +14,12 @@ const SearchResults = ({ geoLocationData, error, onSelectedCity }) => {
             Loading...
           </p>
         ) : (
-          geoLocationData.map(({ id, city, country, countryCode }) => {
+          geoLocationData.map(({ id, city, country, countryCode }, index) => {
             return (
               <Button
                 key={id}
                 className="px-2 py-1 font-medium text-left hover:bg-blue-300 hover:text-black text-md md:text-lg"
-                onClick={() => onSelectedCity(geoLocationData)}
+                onClick={() => onSelectedCity(geoLocationData[index])}
               >
                 {`${city}, ${country} ${countryCode}`}
               </Button>
