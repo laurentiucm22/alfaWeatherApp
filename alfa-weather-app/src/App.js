@@ -18,7 +18,6 @@ const App = () => {
           <Route exact path="/" element={<StartPage />} />
           <Route path="/current-weather" element={<WeatherPage />} />
         </Routes>
-
         <Footer />
       </Wrapper>
     </div>

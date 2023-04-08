@@ -13,7 +13,7 @@ const SearchForm = ({ searchValue, setSearchValue }) => {
           id="search-city"
           className="px-2 py-1 text-black outline-none rounded-b-md"
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value.trim().toLowerCase())}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
       </div>
     </Form>

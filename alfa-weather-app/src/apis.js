@@ -17,7 +17,7 @@ export const fetchGeoLocationData = async (inputValue = "") => {
 
       const data = await fetch(GEO_API_URL, geoApiOptions);
 
-      if (!data || !data.ok) throw new Error("Invalid data");
+      if (!data || !data.ok) throw new Error(`${data.status}: Invalid data!`);
 
       response = await data.json();
 
@@ -43,8 +43,9 @@ export const fetchGeoLocationData = async (inputValue = "") => {
 
       return transformedDataObj;
     }
+    return;
   } catch (err) {
-    console.log(err);
+    console.warn(err);
     throw err;
   }
 };
@@ -61,17 +62,18 @@ const currentWeatherApiOptions = {
 const CURRENT_WEATHER_BASE_URL =
   "https://weather-by-api-ninjas.p.rapidapi.com/v1/weather";
 
-export const fetchCurrentWeatherData = async (cords = {}) => {
-  if (cords.lat && cords.lon) {
-    const cityName = cords.city;
-    const CURRENT_WEATHER_URL = `${CURRENT_WEATHER_BASE_URL}?lat=${cords.lat}&lon=${cords.lon}`;
+export const fetchCurrentWeatherData = async (coords = {}) => {
+  if (coords.lat && coords.lon) {
+    const cityName = coords.city;
+    const CURRENT_WEATHER_URL = `${CURRENT_WEATHER_BASE_URL}?lat=${coords.lat}&lon=${coords.lon}`;
 
     let response;
 
     try {
       const data = await fetch(CURRENT_WEATHER_URL, currentWeatherApiOptions);
 
-      if (!data.ok) throw new Error(`${data.status}`);
+      if (!data.ok)
+        throw new Error(`${data.status}: Missing current weather data!`);
 
       response = await data.json();
 
@@ -79,9 +81,11 @@ export const fetchCurrentWeatherData = async (cords = {}) => {
         ...response,
         cityName,
       };
+      console.log(transformedDataObj);
 
       return transformedDataObj;
     } catch (err) {
+      console.warn(err);
       throw err;
     }
   }

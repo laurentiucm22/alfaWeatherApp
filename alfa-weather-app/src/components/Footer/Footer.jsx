@@ -6,12 +6,13 @@ const Footer = () => {
     <Wrapper className="absolute bottom-0 z-20 flex items-center justify-center w-full p-5 text-center">
       <h3 className="font-bold text-md">
         <span className="text-black">&copy;Copyrights,</span> all rights
-        reserved to&nbsp;
+        reserved to
         <a
           href="https://instagram.com/zoomclm"
           alt="laurentiu costachescu instagram"
           target="_blank"
           rel="noreferrer"
+          className="pl-1"
         >
           @zoomclm
         </a>

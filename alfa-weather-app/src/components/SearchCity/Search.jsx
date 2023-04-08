@@ -2,46 +2,56 @@ import React, { useEffect, useState } from "react";
 import { fetchGeoLocationData, fetchCurrentWeatherData } from "../../apis";
 import SearchResults from "./SearchResults";
 import { useNavigate } from "react-router-dom";
-import loaderIcon from "../../assets/images/icons-loading.png";
 import Wrapper from "../../UI/Wrapper";
 import SearchForm from "./SearchForm";
+import Loading from "../../UI/Loading";
+import useDebounce from "../../hooks/useDebounce";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
   const [geoLocationData, setGeoLocationData] = useState([]);
-  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const debounceValueHandler = useDebounce(searchValue, 600);
 
-  const handleFetchLocationData = async (searchValue) => {
-    try {
-      setError(false);
-
-      await fetchGeoLocationData(searchValue).then((city) => {
-        setGeoLocationData(city);
-      });
-    } catch (err) {
-      setError(true);
+  const handleFetchLocationData = async () => {
+    if (debounceValueHandler) {
+      setIsLoading(true);
+      try {
+        await fetchGeoLocationData(debounceValueHandler).then((city) => {
+          setGeoLocationData(city);
+        });
+      } catch (err) {
+        console.warn(err);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setGeoLocationData([]);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    handleFetchLocationData(searchValue);
-  }, [searchValue]);
+    handleFetchLocationData(debounceValueHandler);
+  }, [debounceValueHandler]);
 
   const onSelectedCity = async (selectedCity) => {
-    setSearchValue("");
     setGeoLocationData([]);
+    setSearchValue("");
 
     try {
       const { lat, lon, city } = selectedCity;
-      console.log(lat, lon, city);
+
       await fetchCurrentWeatherData({
         ...(lat && { lat }),
         ...(lon && { lon }),
         ...(city && { city }),
       });
     } catch (err) {
-      setError(true);
+      console.warn(err);
+      throw err;
     } finally {
       navigate("current-weather");
     }
@@ -51,22 +61,14 @@ const Search = () => {
     <Wrapper className="flex flex-col items-center justify-center custome-form md:w-96">
       <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
 
-      {geoLocationData?.length > 0 ? (
+      {geoLocationData?.length > 0 && (
         <SearchResults
           onSelectedCity={onSelectedCity}
           geoLocationData={geoLocationData}
-          error={error}
         />
-      ) : (
-        error && (
-          <p className="flex items-center self-start font-bold">
-            <span className="mr-1 animate-spin">
-              <img src={loaderIcon} alt="loader" />
-            </span>
-            Loading...
-          </p>
-        )
       )}
+
+      {isLoading && <Loading />}
     </Wrapper>
   );
 };

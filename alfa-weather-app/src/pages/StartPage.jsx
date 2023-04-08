@@ -1,7 +1,7 @@
-import React from "react";
-import Search from "../components/SearchCity/Search";
-import introWeatherAppImg from "../assets/images/weather-app-intro.png";
-import Wrapper from "../UI/Wrapper";
+import React from 'react';
+import Search from '../components/SearchCity/Search';
+import introWeatherAppImg from '../assets/images/weather-app-intro.png';
+import Wrapper from '../UI/Wrapper';
 
 const StartPage = () => {
   return (
@@ -14,7 +14,7 @@ const StartPage = () => {
         <img
           src={introWeatherAppImg}
           alt="weather app"
-          className="w-40 md:w-full"
+          className="w-32 md:w-full"
         />
       </div>
       <Search />
