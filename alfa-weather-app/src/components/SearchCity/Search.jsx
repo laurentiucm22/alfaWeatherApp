@@ -6,39 +6,27 @@ import Wrapper from "../../UI/Wrapper";
 import SearchForm from "./SearchForm";
 import Loading from "../../UI/Loading";
 import useDebounce from "../../hooks/useDebounce";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  initialState,
+  searchCityResults,
+} from "../../Redux/slices/searchCitySlice";
+import searchCityActions from "../../Redux/actions/searchCityActions";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [geoLocationData, setGeoLocationData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const searchCityList = useSelector((state) => state.rootSearchResult.data);
   const debounceValueHandler = useDebounce(searchValue, 600);
 
-  const handleFetchLocationData = async () => {
-    if (debounceValueHandler) {
-      setIsLoading(true);
-      try {
-        await fetchGeoLocationData(debounceValueHandler).then((city) => {
-          setGeoLocationData(city);
-        });
-      } catch (err) {
-        console.warn(err);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      setGeoLocationData([]);
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    handleFetchLocationData(debounceValueHandler);
-  }, [debounceValueHandler]);
+    if (debounceValueHandler === "") return;
+
+    dispatch(searchCityActions(debounceValueHandler));
+  }, [dispatch, debounceValueHandler]);
 
   const onSelectedCity = async (selectedCity) => {
-    setGeoLocationData([]);
     setSearchValue("");
 
     try {
@@ -52,23 +40,21 @@ const Search = () => {
     } catch (err) {
       console.warn(err);
       throw err;
-    } finally {
-      navigate("current-weather");
     }
+    // finally {
+    //   navigate("current-weather");
+    // }
   };
 
   return (
     <Wrapper className="flex flex-col items-center justify-center custome-form md:w-96">
       <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
 
-      {geoLocationData?.length > 0 && (
-        <SearchResults
-          onSelectedCity={onSelectedCity}
-          geoLocationData={geoLocationData}
-        />
+      {searchCityList?.length > 0 && (
+        <SearchResults onSelectedCity={onSelectedCity} />
       )}
 
-      {isLoading && <Loading />}
+      {/*{<Loading />}*/}
     </Wrapper>
   );
 };

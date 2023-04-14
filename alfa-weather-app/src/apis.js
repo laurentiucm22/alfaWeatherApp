@@ -1,12 +1,12 @@
 // GEO Location API
-const geoApiOptions = {
+export const geoApiOptions = {
   method: "GET",
   headers: {
     "X-RapidAPI-Key": process.env.REACT_APP_GEOLOCATION_API_KEY,
     "X-RapidAPI-Host": process.env.REACT_APP_GEOLOCATION_API_HOST,
   },
 };
-const GEO_BASE_URL = "https://wft-geo-db.p.rapidapi.com/v1/geo";
+export const GEO_BASE_URL = "https://wft-geo-db.p.rapidapi.com/v1/geo";
 
 export const fetchGeoLocationData = async (inputValue = "") => {
   try {
