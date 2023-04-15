@@ -7,7 +7,7 @@ import WeatherPage from "./pages/WeatherPage";
 
 const App = () => {
   return (
-    <div
+    <Wrapper
       style={{
         backgroundImage: `url(${backgroundImage})`,
       }}
@@ -20,7 +20,7 @@ const App = () => {
         </Routes>
         <Footer />
       </Wrapper>
-    </div>
+    </Wrapper>
   );
 };
 

@@ -6,17 +6,21 @@ const searchCitySlice = createSlice({
   name: "search-results",
   initialState,
   reducers: {
+    resetSearchData(state) {
+      state.data = [];
+    },
     searchCityResults(state, action) {
       if (!action?.payload) {
         state.data = [];
       }
+
       const searchCity = action.payload.data.map((city) => ({
         id: city.id,
         city: city.city,
         country: city.country,
         countryCode: city.countryCode,
-        latitude: city.latitude,
-        longitude: city.longitude,
+        lat: city.latitude,
+        lon: city.longitude,
       }));
 
       state.data = searchCity;
@@ -24,6 +28,6 @@ const searchCitySlice = createSlice({
   },
 });
 
-export const { searchCityResults } = searchCitySlice.actions;
+export const { searchCityResults, resetSearchData } = searchCitySlice.actions;
 
 export default searchCitySlice.reducer;
