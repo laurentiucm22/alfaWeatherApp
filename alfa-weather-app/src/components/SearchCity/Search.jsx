@@ -1,56 +1,64 @@
-import React, { useEffect, useState } from "react";
-import { fetchGeoLocationData, fetchCurrentWeatherData } from "../../apis";
+import React, { useCallback, useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
 import { useNavigate } from "react-router-dom";
 import Wrapper from "../../UI/Wrapper";
 import SearchForm from "./SearchForm";
-import Loading from "../../UI/Loading";
+import Loading, { LoadingPages } from "../../UI/Loading";
 import useDebounce from "../../hooks/useDebounce";
+import { useDispatch, useSelector } from "react-redux";
+import { resetSearchData } from "../../Redux/slices/searchCitySlice";
+import searchCityActions from "../../Redux/actions/searchCityActions";
+import { isLoading, isLoadingPage } from "../../Redux/slices/uiProjectSlice";
+import currentWeatherActions from "../../Redux/actions/currentWeatherActions";
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [geoLocationData, setGeoLocationData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const debounceValueHandler = useDebounce(searchValue, 600);
+  const dispatch = useDispatch();
+  const searchCityList = useSelector((state) => state.rootSearchResult.data);
+  const loading = useSelector((state) => state.rootUi.loading);
 
-  const handleFetchLocationData = async () => {
-    if (debounceValueHandler) {
-      setIsLoading(true);
-      try {
-        await fetchGeoLocationData(debounceValueHandler).then((city) => {
-          setGeoLocationData(city);
-        });
-      } catch (err) {
-        console.warn(err);
-        throw err;
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      setGeoLocationData([]);
-      setIsLoading(false);
+  const debounceValueHandler = useDebounce(searchValue, 1000);
+
+  const searchCityHandler = useCallback(() => {
+    if (debounceValueHandler !== "") {
+      dispatch(
+        searchCityActions(debounceValueHandler, {
+          onSuccess() {
+            dispatch(isLoading(false));
+          },
+          onError() {
+            dispatch(isLoading(false));
+          },
+        })
+      );
     }
-  };
+
+    dispatch(resetSearchData());
+    return;
+  }, [debounceValueHandler, dispatch]);
 
   useEffect(() => {
-    handleFetchLocationData(debounceValueHandler);
-  }, [debounceValueHandler]);
+    searchCityHandler();
+  }, [searchCityHandler]);
 
   const onSelectedCity = async (selectedCity) => {
-    setGeoLocationData([]);
     setSearchValue("");
+    dispatch(resetSearchData());
+    dispatch(isLoadingPage(true));
+    const { lat, lon, city, id } = selectedCity;
 
     try {
-      const { lat, lon, city } = selectedCity;
-
-      await fetchCurrentWeatherData({
-        ...(lat && { lat }),
-        ...(lon && { lon }),
-        ...(city && { city }),
-      });
+      await dispatch(
+        currentWeatherActions({
+          ...(lat && { lat }),
+          ...(lon && { lon }),
+          ...(city && { city }),
+          ...(id && { id }),
+        })
+      );
+      dispatch(isLoadingPage(false));
     } catch (err) {
-      console.warn(err);
       throw err;
     } finally {
       navigate("current-weather");
@@ -61,14 +69,11 @@ const Search = () => {
     <Wrapper className="flex flex-col items-center justify-center custome-form md:w-96">
       <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
 
-      {geoLocationData?.length > 0 && (
-        <SearchResults
-          onSelectedCity={onSelectedCity}
-          geoLocationData={geoLocationData}
-        />
+      {searchCityList?.length > 0 && (
+        <SearchResults onSelectedCity={onSelectedCity} />
       )}
 
-      {isLoading && <Loading />}
+      {loading && <Loading />}
     </Wrapper>
   );
 };

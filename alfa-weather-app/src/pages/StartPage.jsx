@@ -1,11 +1,17 @@
-import React from 'react';
-import Search from '../components/SearchCity/Search';
-import introWeatherAppImg from '../assets/images/weather-app-intro.png';
-import Wrapper from '../UI/Wrapper';
+import React from "react";
+import Search from "../components/SearchCity/Search";
+import introWeatherAppImg from "../assets/images/weather-app-intro.png";
+import Wrapper from "../UI/Wrapper";
+import { LoadingPages } from "../UI/Loading";
+import { isLoadingPage } from "../Redux/slices/uiProjectSlice";
+import { useSelector } from "react-redux";
 
 const StartPage = () => {
+  const loadingPage = useSelector((state) => state.rootUi.isLoadingPage);
+
   return (
-    <Wrapper className="flex flex-col items-center w-screen h-screen pt-16">
+    <Wrapper className="relative flex flex-col items-center w-screen h-screen pt-16">
+      {isLoadingPage && <LoadingPages isLoadingPage={loadingPage} />}
       <h1 className="text-2xl font-medium lg:text-3xl">
         <span className="font-mono font-light text-black">ALFA</span> Weather
         App°

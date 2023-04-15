@@ -1,32 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  loading: false,
-  data: [],
-  error: null,
-};
+export const initialState = { data: [] };
 
-export const searchCitySlice = createSlice({
-  name: "searchCityData",
+const searchCitySlice = createSlice({
+  name: "search-results",
   initialState,
   reducers: {
-    searchCityRequest: (state) => {
-      state.loading = true;
+    resetSearchData(state) {
       state.data = [];
-      state.error = null;
     },
-    searchCitySuccess: (state, action) => {
-      state.loading = false;
-      state.data = action.payload;
-      state.error = null;
-    },
-    searchCityError: (state, action) => {
-      state.loading = false;
-      state.data = [];
-      state.error = action.payload;
+    searchCityResults(state, action) {
+      if (!action?.payload) {
+        state.data = [];
+      }
+
+      const searchCity = action.payload.data.map((city) => ({
+        id: city.id,
+        city: city.city,
+        country: city.country,
+        countryCode: city.countryCode,
+        lat: city.latitude,
+        lon: city.longitude,
+      }));
+
+      state.data = searchCity;
     },
   },
 });
 
-export const { searchCityRequest, searchCitySuccess, searchCityError } =
-  searchCitySlice.actions;
+export const { searchCityResults, resetSearchData } = searchCitySlice.actions;
+
+export default searchCitySlice.reducer;
