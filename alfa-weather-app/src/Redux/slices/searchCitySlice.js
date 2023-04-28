@@ -14,7 +14,7 @@ const searchCitySlice = createSlice({
         state.data = [];
       }
 
-      const searchCity = action.payload.data.map((city) => ({
+      const searchCityTransResp = action.payload.data.map((city) => ({
         id: city.id,
         city: city.city,
         country: city.country,
@@ -23,7 +23,7 @@ const searchCitySlice = createSlice({
         lon: city.longitude,
       }));
 
-      state.data = searchCity;
+      state.data = searchCityTransResp;
     },
   },
 });

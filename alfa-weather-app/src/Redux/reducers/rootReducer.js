@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import searchCityReducer from "../slices/searchCitySlice";
 import currentWeatherReducer from "../slices/currentWeatherSlice";
-import uiReducer from "../slices/uiProjectSlice";
+import uiReducer from "../slices/uiSlice";
 
 const rootReducer = combineReducers({
   rootSearchResult: searchCityReducer,

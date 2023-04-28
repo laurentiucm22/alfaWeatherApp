@@ -1,12 +1,12 @@
 import React from "react";
 import CurrentWeather from "../components/CurrentWeather/CurrentWeather";
-import Wrapper from "../UI/Wrapper";
+import Container from "../UI/Container";
 
 const WeatherPage = () => {
   return (
-    <Wrapper className="h-screen">
+    <Container className="flex justify-center bg-sky-400">
       <CurrentWeather />
-    </Wrapper>
+    </Container>
   );
 };
 

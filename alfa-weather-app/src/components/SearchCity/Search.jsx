@@ -1,64 +1,83 @@
 import React, { useCallback, useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
 import { useNavigate } from "react-router-dom";
-import Wrapper from "../../UI/Wrapper";
 import SearchForm from "./SearchForm";
-import Loading, { LoadingPages } from "../../UI/Loading";
+import Loading from "../../UI/Loading";
+import ErrorCard from "../../UI/ErrorCard";
+import Container from "../../UI/Container";
 import useDebounce from "../../hooks/useDebounce";
 import { useDispatch, useSelector } from "react-redux";
 import { resetSearchData } from "../../Redux/slices/searchCitySlice";
 import searchCityActions from "../../Redux/actions/searchCityActions";
-import { isLoading, isLoadingPage } from "../../Redux/slices/uiProjectSlice";
+import { isLoading, isLoadingPage, isError } from "../../Redux/slices/uiSlice";
 import currentWeatherActions from "../../Redux/actions/currentWeatherActions";
 
 const Search = () => {
+  // Hooks
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const searchCityList = useSelector((state) => state.rootSearchResult.data);
   const loading = useSelector((state) => state.rootUi.loading);
+  const errorBool = useSelector((state) => state.rootUi.isError);
+  const errorCardDescription = useSelector((state) => state.rootUi.errorCard);
+  const isAuth = useSelector((state) => state.rootUi.isAuthenticate);
+  const debounceValue = useDebounce(searchValue, 1000);
 
-  const debounceValueHandler = useDebounce(searchValue, 1000);
-
+  // Components logic
   const searchCityHandler = useCallback(() => {
-    if (debounceValueHandler !== "") {
-      dispatch(
-        searchCityActions(debounceValueHandler, {
-          onSuccess() {
-            dispatch(isLoading(false));
-          },
-          onError() {
-            dispatch(isLoading(false));
-          },
-        })
-      );
+    if (debounceValue !== "") {
+      const status = {
+        onSuccess() {
+          dispatch(isLoading(false));
+          dispatch(isError(false));
+        },
+
+        onError() {
+          dispatch(isLoading(false));
+          dispatch(isError(true));
+        },
+      };
+
+      dispatch(searchCityActions(debounceValue, status));
     }
 
+    dispatch(isError(false));
     dispatch(resetSearchData());
     return;
-  }, [debounceValueHandler, dispatch]);
+  }, [debounceValue, dispatch]);
 
   useEffect(() => {
     searchCityHandler();
   }, [searchCityHandler]);
 
+  const currentWeatherData = useCallback(
+    async (currentWeatherForSelectedCity) => {
+      const { lat, lon, city, id } = currentWeatherForSelectedCity;
+
+      await dispatch(
+        currentWeatherActions({
+          ...(id && { id }),
+          ...(lat && { lat }),
+          ...(lon && { lon }),
+          ...(city && { city }),
+        })
+      );
+    },
+    [dispatch]
+  );
+
   const onSelectedCity = async (selectedCity) => {
     setSearchValue("");
     dispatch(resetSearchData());
     dispatch(isLoadingPage(true));
-    const { lat, lon, city, id } = selectedCity;
 
     try {
-      await dispatch(
-        currentWeatherActions({
-          ...(lat && { lat }),
-          ...(lon && { lon }),
-          ...(city && { city }),
-          ...(id && { id }),
-        })
-      );
+      await currentWeatherData(selectedCity);
+
       dispatch(isLoadingPage(false));
     } catch (err) {
+      dispatch(isError(true));
       throw err;
     } finally {
       navigate("current-weather");
@@ -66,15 +85,25 @@ const Search = () => {
   };
 
   return (
-    <Wrapper className="flex flex-col items-center justify-center custome-form md:w-96">
-      <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
-
-      {searchCityList?.length > 0 && (
-        <SearchResults onSelectedCity={onSelectedCity} />
+    <Container className="flex flex-col items-center justify-center custome-form md:w-96">
+      {isAuth && (
+        <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
       )}
 
+      <ul className="w-full">
+        {searchCityList.length > 0 && (
+          <SearchResults onSelectedCity={onSelectedCity} />
+        )}
+      </ul>
+
       {loading && <Loading />}
-    </Wrapper>
+      {errorBool && (
+        <ErrorCard
+          title={errorCardDescription.title}
+          message={errorCardDescription.message}
+        />
+      )}
+    </Container>
   );
 };
 

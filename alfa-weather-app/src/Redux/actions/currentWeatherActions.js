@@ -1,5 +1,6 @@
 import { CURRENT_WEATHER_BASE_URL, currentWeatherApiOptions } from "../../apis";
 import { currentWeatherData } from "../slices/currentWeatherSlice";
+import { errorCard } from "../slices/uiSlice";
 
 const currentWeatherActions = (coords = {}) => {
   return async (dispatch) => {
@@ -12,9 +13,16 @@ const currentWeatherActions = (coords = {}) => {
       const fetchCurrentWeatherData = async () => {
         const data = await fetch(CURRENT_WEATHER_URL, currentWeatherApiOptions);
 
-        if (!data.ok)
-          throw new Error(`${data.status}: Missing current weather data!`);
+        if (!data.ok) {
+          dispatch(
+            errorCard({
+              title: `Error ${data.status}`,
+              message: "Failed to fetch Current Weather Data!",
+            })
+          );
 
+          throw new Error(`${data.status}: Missing current weather data!`);
+        }
         const response = await data.json();
 
         const transformedDataObj = {
