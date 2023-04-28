@@ -1,8 +1,8 @@
 import { GEO_BASE_URL, geoApiOptions } from "../../apis";
 import { searchCityResults } from "../slices/searchCitySlice";
-import { isLoading } from "../slices/uiProjectSlice";
+import { errorCard, isLoading } from "../slices/uiSlice";
 
-const searchCityActions = (inputValue = "", callBacks = {}) => {
+const searchCityActions = (inputValue = "", status = {}) => {
   return async (dispatch) => {
     const GEO_API_URL = `${GEO_BASE_URL}/cities?limit=10&minPopulation=20000&namePrefix=${inputValue}`;
 
@@ -10,6 +10,13 @@ const searchCityActions = (inputValue = "", callBacks = {}) => {
       const data = await fetch(GEO_API_URL, geoApiOptions);
 
       if (!data || !data.ok) {
+        dispatch(
+          errorCard({
+            title: `Error: ${data.status}`,
+            message: "Failed to GET city data!",
+          })
+        );
+
         throw new Error(`${data.status}: Failed to GET city data!`);
       }
 
@@ -20,12 +27,16 @@ const searchCityActions = (inputValue = "", callBacks = {}) => {
 
     try {
       dispatch(isLoading(true));
+
       const geoLocationData = await fetchGeoLocationData();
       dispatch(searchCityResults(geoLocationData));
 
-      callBacks.onSuccess && callBacks.onSuccess(geoLocationData);
+      status.onSuccess && status.onSuccess(geoLocationData);
     } catch (err) {
-      callBacks.onError && callBacks.onError(err);
+      status.onError && status.onError(err);
+
+      dispatch(isLoading(false));
+
       throw err;
     }
   };

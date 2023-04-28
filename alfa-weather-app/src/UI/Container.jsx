@@ -1,6 +1,6 @@
 import React from "react";
 
-const Card = ({ className, children, style }) => {
+const Container = ({ style, className, children }) => {
   return (
     <div className={className} style={style}>
       {children}
@@ -8,4 +8,4 @@ const Card = ({ className, children, style }) => {
   );
 };
 
-export default Card;
+export default Container;

@@ -6,4 +6,10 @@
   .custome-form {
     width: 18rem;
   }
+
+  @media (max-width: 800px) {
+    .error_card-container {
+      flex-direction: column;
+    }
+  }
 }
