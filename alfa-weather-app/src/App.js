@@ -18,7 +18,7 @@ const App = () => {
     >
       <Wrapper
         className="h-full"
-        style={{ backgroundColor: "rgba(25, 195, 251, 0.4)" }}
+        style={{ backgroundColor: "rgba(25, 195, 251, 0.3)" }}
       >
         <NavBar />
 

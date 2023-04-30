@@ -8,7 +8,7 @@ export const geoApiOptions = {
 };
 export const GEO_BASE_URL = "https://wft-geo-db.p.rapidapi.com/v1/geo";
 
-// CURRENT WEATHER API
+// Current Weather API
 export const currentWeatherApiOptions = {
   method: "GET",
   headers: {
@@ -18,3 +18,15 @@ export const currentWeatherApiOptions = {
 };
 export const CURRENT_WEATHER_BASE_URL =
   "https://weather-by-api-ninjas.p.rapidapi.com/v1/weather";
+
+// Weather forecast API
+export const weatherForeCastOptions = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Key": process.env.REACT_APP_WEATHER_FORECAST_API_KEY,
+    "X-RapidAPI-Host": process.env.REACT_APP_WEATHER_FORECAST_API_HOST,
+  },
+};
+
+export const WEATHER_FORE_CAST_BASE_URL =
+  "https://weatherbit-v1-mashape.p.rapidapi.com/forecast/minutely";

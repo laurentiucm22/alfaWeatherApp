@@ -9,8 +9,9 @@ import useDebounce from "../../hooks/useDebounce";
 import { useDispatch, useSelector } from "react-redux";
 import { resetSearchData } from "../../Redux/slices/searchCitySlice";
 import searchCityActions from "../../Redux/actions/searchCityActions";
-import { isLoading, isLoadingPage, isError } from "../../Redux/slices/uiSlice";
+import { isLoadingPage, isError } from "../../Redux/slices/uiSlice";
 import currentWeatherActions from "../../Redux/actions/currentWeatherActions";
+import weatherForecastActions from "../../Redux/actions/weatherForecastActions";
 
 const Search = () => {
   // Hooks
@@ -27,21 +28,8 @@ const Search = () => {
   // Components logic
   const searchCityHandler = useCallback(() => {
     if (debounceValue !== "") {
-      const status = {
-        onSuccess() {
-          dispatch(isLoading(false));
-          dispatch(isError(false));
-        },
-
-        onError() {
-          dispatch(isLoading(false));
-          dispatch(isError(true));
-        },
-      };
-
-      dispatch(searchCityActions(debounceValue, status));
+      dispatch(searchCityActions(debounceValue));
     }
-
     dispatch(isError(false));
     dispatch(resetSearchData());
     return;
@@ -55,14 +43,16 @@ const Search = () => {
     async (currentWeatherForSelectedCity) => {
       const { lat, lon, city, id } = currentWeatherForSelectedCity;
 
-      await dispatch(
-        currentWeatherActions({
-          ...(id && { id }),
-          ...(lat && { lat }),
-          ...(lon && { lon }),
-          ...(city && { city }),
-        })
-      );
+      const transformedSelectedCityObj = {
+        ...(id && { id }),
+        ...(lat && { lat }),
+        ...(lon && { lon }),
+        ...(city && { city }),
+      };
+
+      await dispatch(currentWeatherActions(transformedSelectedCityObj));
+
+      await dispatch(weatherForecastActions(transformedSelectedCityObj));
     },
     [dispatch]
   );
@@ -78,6 +68,7 @@ const Search = () => {
       dispatch(isLoadingPage(false));
     } catch (err) {
       dispatch(isError(true));
+
       throw err;
     } finally {
       navigate("current-weather");
@@ -85,7 +76,7 @@ const Search = () => {
   };
 
   return (
-    <Container className="flex flex-col items-center justify-center custome-form md:w-96">
+    <Container className="flex flex-col items-center justify-center w-72 custome-form md:w-80 lg:w-92">
       {isAuth && (
         <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
       )}
