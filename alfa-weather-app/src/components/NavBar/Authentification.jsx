@@ -14,7 +14,7 @@ export const LogIn = () => {
 
   return (
     <Button
-      className="py-2 mr-4 transition bg-indigo-600 rounded-full shadow-md hover:bg-indigo-700 px-7 text-bold text-md"
+      className="py-2 mr-4 text-sm transition bg-indigo-600 rounded-full shadow-md hover:bg-indigo-700 px-7 md:text-md small_login-btn"
       onClick={logInHandler}
     >
       Log In
@@ -27,7 +27,7 @@ export const LogOut = () => {
   const navigate = useNavigate();
 
   const logOutHandler = () => {
-    dispatch(isAuthenticated(null));
+    dispatch(isAuthenticated(false));
     navigate("/");
     localStorage.clear();
     window.location.reload();
@@ -35,7 +35,7 @@ export const LogOut = () => {
 
   return (
     <Button
-      className="py-2 text-white transition bg-indigo-300 rounded-full shadow-sm text-bold hover:bg-indigo-600 border-1 px-7 text-md hover:text-white"
+      className="px-6 py-2 text-sm text-white transition bg-indigo-300 rounded-full shadow-sm md:py-2 text-bold hover:bg-indigo-600 border-1 md:px-7 md:text-md hover:text-white small_logout-btn"
       onClick={logOutHandler}
     >
       Log Out

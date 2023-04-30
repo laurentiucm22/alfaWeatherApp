@@ -9,6 +9,7 @@ const searchCitySlice = createSlice({
     resetSearchData(state) {
       state.data = [];
     },
+
     searchCityResults(state, action) {
       if (!action?.payload) {
         state.data = [];

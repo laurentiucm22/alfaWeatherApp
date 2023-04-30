@@ -3,7 +3,7 @@ import Wrapper from "../../UI/Wrapper";
 
 const Footer = () => {
   return (
-    <Wrapper className="absolute bottom-0 z-20 flex items-center justify-center w-full p-5 text-center">
+    <Wrapper className="absolute bottom-0 z-20 flex items-center justify-center w-full p-5 text-sm text-center md:text-lg">
       <h3 className="font-bold text-md">
         <span className="text-black">&copy;Copyrights,</span> all rights
         reserved to
