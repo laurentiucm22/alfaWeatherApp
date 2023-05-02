@@ -2,22 +2,20 @@ import React from "react";
 import Container from "../../UI/Container";
 import Wrapper from "../../UI/Wrapper";
 import Logo from "./Logo";
-import { LogIn, LogOut } from "./Authentification";
-import SearchMenu from "./SearchMenu";
-import { useSelector } from "react-redux";
+import Authentification from "../Authentification/Authentification";
 
 const NavBar = () => {
-  const isAuth = useSelector((state) => state.rootUi.isAuthenticate);
+  const navBarStyle = {
+    navBarWrapper: "w-11/12 md:w-4/5 m-auto",
+    nav: "flex items-center justify-between py-2",
+  };
 
   return (
     <Container>
-      <Wrapper className="w-4/5 m-auto">
-        <nav className="flex items-center justify-between py-3">
+      <Wrapper className={navBarStyle.navBarWrapper}>
+        <nav className={navBarStyle.nav}>
           <Logo />
-          <Container className="flex items-center">
-            {isAuth ? <LogOut /> : <LogIn />}
-            {isAuth && <SearchMenu />}
-          </Container>
+          <Authentification />
         </nav>
       </Wrapper>
     </Container>

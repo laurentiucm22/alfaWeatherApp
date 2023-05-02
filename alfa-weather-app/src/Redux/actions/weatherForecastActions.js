@@ -1,5 +1,5 @@
 import { WEATHER_FORE_CAST_BASE_URL, weatherForeCastOptions } from "../../apis";
-import { errorCard, isError } from "../slices/uiSlice";
+import { errorCard } from "../slices/uiSlice";
 import { forecastData } from "../slices/weatherForecastSlice";
 
 const weatherForecastActions = (coords = {}) => {
@@ -19,7 +19,7 @@ const weatherForecastActions = (coords = {}) => {
             })
           );
 
-          throw new Error(`${data.status}: Missing current weather data!`);
+          throw new Error(`${data.status}: Failed to fetch Forecast Data!`);
         }
 
         const response = await data.json();

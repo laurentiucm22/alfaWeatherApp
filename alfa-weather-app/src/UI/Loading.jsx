@@ -10,7 +10,7 @@ export const LoadingPages = ({ isLoadingPage }) => {
   }
 
   return ReactDOM.createPortal(
-    <Container className="absolute top-0 left-0 z-50 w-screen h-screen bg-black/[0.4] flex items-center justify-center">
+    <Container className="absolute pointer-events-none top-0 left-0 z-50 w-screen h-screen bg-black/[0.4] flex items-center justify-center">
       <Container className="w-8 h-8 animate-spin">
         <PageLoader className="w-full h-full text-white" />
       </Container>

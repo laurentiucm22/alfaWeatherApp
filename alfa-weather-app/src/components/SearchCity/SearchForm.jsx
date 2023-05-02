@@ -5,7 +5,7 @@ import Input from "../../UI/Input";
 const SearchForm = ({ searchValue, setSearchValue }) => {
   const searchFormStyle = {
     formStyle: "w-full bg-blue-500 rounded-md flex flex-col font-medium",
-    formLabel: "px-2 py-1 text-sm md:text-md lg:text-lg",
+    formLabel: "px-2 py-1 text-sm md:text-md",
     formInput: "px-2 py-1 text-black outline-none rounded-b-md",
   };
 

@@ -4,21 +4,24 @@ import Card from "./Card";
 import { BiErrorCircle } from "react-icons/bi";
 import { isError } from "../Redux/slices/uiSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const ErrorCard = ({ title, message }) => {
   const dispatch = useDispatch();
   const errorCurrentState = useSelector((state) => state.rootUi.isError);
+  const navigate = useNavigate();
 
   const errorResetHandler = () => {
     if (errorCurrentState) {
       setTimeout(() => {
         dispatch(isError(false));
+        navigate("/");
         window.location.reload();
       }, 3000);
     }
   };
 
-  errorResetHandler();
+  // errorResetHandler();
 
   const errorCardStyle = {
     errorCard:

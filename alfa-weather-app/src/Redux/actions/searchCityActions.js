@@ -13,11 +13,11 @@ const searchCityActions = (inputValue = "") => {
         dispatch(
           errorCard({
             title: `Error: ${data.status}`,
-            message: "Failed to GET city data!",
+            message: "Failed to fetch City Data!",
           })
         );
 
-        throw new Error(`${data.status}: Failed to GET city data!`);
+        throw new Error(`${data.status}: Failed to fetch City Data!`);
       }
 
       const response = await data.json();
