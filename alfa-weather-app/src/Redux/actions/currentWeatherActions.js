@@ -21,7 +21,9 @@ const currentWeatherActions = (coords = {}) => {
             })
           );
 
-          throw new Error(`${data.status}: Missing current weather data!`);
+          throw new Error(
+            `${data.status}: Faild to fetch Current Weather data!`
+          );
         }
         const response = await data.json();
 

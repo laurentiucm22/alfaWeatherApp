@@ -1,3 +1,4 @@
+import React from "react";
 import StartPage from "./pages/StartPage";
 import backgroundImage from "../src/assets/images/bg-image.jpg";
 import Footer from "./components/Footer/Footer";
@@ -20,17 +21,11 @@ const App = () => {
         className="h-full"
         style={{ backgroundColor: "rgba(25, 195, 251, 0.3)" }}
       >
-        <NavBar />
+        <NavBar firebase={app} firebaseAuth={auth} firebaseDb={db} />
 
         <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-              <StartPage firebase={app} firebaseAuth={auth} firebaseDb={db} />
-            }
-          />
-          <Route path="/current-weather" element={<WeatherPage />} />
+          <Route exact path="/" element={<StartPage />} />
+          <Route path="/city-weather" element={<WeatherPage />} />
         </Routes>
 
         <Footer />

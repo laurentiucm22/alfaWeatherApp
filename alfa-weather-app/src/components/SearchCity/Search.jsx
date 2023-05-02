@@ -52,7 +52,7 @@ const Search = () => {
 
       await dispatch(currentWeatherActions(transformedSelectedCityObj));
 
-      await dispatch(weatherForecastActions(transformedSelectedCityObj));
+      // await dispatch(weatherForecastActions(transformedSelectedCityObj));
     },
     [dispatch]
   );
@@ -61,6 +61,7 @@ const Search = () => {
     setSearchValue("");
     dispatch(resetSearchData());
     dispatch(isLoadingPage(true));
+    localStorage.setItem("lastCity", JSON.stringify(selectedCity));
 
     try {
       await currentWeatherData(selectedCity);
@@ -71,17 +72,43 @@ const Search = () => {
 
       throw err;
     } finally {
-      navigate("current-weather");
+      navigate("city-weather");
     }
   };
 
+  useEffect(() => {
+    const storedCity = localStorage.getItem("lastCity");
+
+    const handleLocalStoredData = async () => {
+      if (!storedCity) {
+        navigate("/");
+        return;
+      }
+
+      try {
+        const prevCity = JSON.parse(storedCity);
+        navigate("city-weather");
+
+        dispatch(isLoadingPage(true));
+        await dispatch(currentWeatherActions(prevCity));
+        // await dispatch(weatherForecastActions(prevCity));
+
+        dispatch(isLoadingPage(false));
+      } catch (err) {
+        dispatch(isError(true));
+      }
+    };
+
+    handleLocalStoredData();
+  }, [navigate, dispatch]);
+
   return (
-    <Container className="flex flex-col items-center justify-center w-72 custome-form md:w-80 lg:w-92">
+    <Container className="flex flex-col items-center justify-center w-72 custome-form md:w-96">
       {isAuth && (
         <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
       )}
 
-      <ul className="w-full">
+      <ul className="w-full w-">
         {searchCityList.length > 0 && (
           <SearchResults onSelectedCity={onSelectedCity} />
         )}

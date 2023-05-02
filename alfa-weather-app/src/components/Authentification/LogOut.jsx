@@ -4,25 +4,7 @@ import { useDispatch } from "react-redux";
 import { isAuthenticated } from "../../Redux/slices/uiSlice";
 import { useNavigate } from "react-router-dom";
 
-export const LogIn = () => {
-  const dispatch = useDispatch();
-
-  const logInHandler = () => {
-    localStorage.setItem("isAuth", true);
-    dispatch(isAuthenticated(true));
-  };
-
-  return (
-    <Button
-      className="py-2 mr-4 text-sm transition bg-indigo-600 rounded-full shadow-md hover:bg-indigo-700 px-7 md:text-md small_login-btn"
-      onClick={logInHandler}
-    >
-      Log In
-    </Button>
-  );
-};
-
-export const LogOut = () => {
+const LogOut = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -42,3 +24,5 @@ export const LogOut = () => {
     </Button>
   );
 };
+
+export default LogOut;

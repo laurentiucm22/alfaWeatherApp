@@ -20,7 +20,7 @@ const StartPage = () => {
         <img
           src={introWeatherAppImg}
           alt="weather app"
-          className="w-32 md:w-full"
+          className="w-32 md:w-44"
         />
       </div>
       <Search />
