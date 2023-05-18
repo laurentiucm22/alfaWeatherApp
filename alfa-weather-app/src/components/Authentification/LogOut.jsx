@@ -8,7 +8,7 @@ const LogOut = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const logOutHandler = () => {
+  const logOutHandler = async () => {
     dispatch(isAuthenticated(false));
     navigate("/");
     localStorage.clear();

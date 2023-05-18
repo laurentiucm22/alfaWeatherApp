@@ -33,8 +33,6 @@ const currentWeatherActions = (coords = {}) => {
           cityId,
         };
 
-        console.log(transformedDataObj);
-
         return transformedDataObj;
       };
 

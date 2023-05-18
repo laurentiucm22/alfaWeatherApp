@@ -5,9 +5,9 @@ import Footer from "./components/Footer/Footer";
 import { Routes, Route } from "react-router-dom";
 import Wrapper from "../src/UI/Wrapper";
 import WeatherPage from "./pages/WeatherPage";
-import { app, auth, db } from "./Firebase/firebase";
 import NavBar from "./components/NavBar/NavBar";
 import Container from "./UI/Container";
+import { auth } from "./Firebase/firebase";
 
 const App = () => {
   return (
@@ -21,7 +21,7 @@ const App = () => {
         className="h-full"
         style={{ backgroundColor: "rgba(25, 195, 251, 0.3)" }}
       >
-        <NavBar firebase={app} firebaseAuth={auth} firebaseDb={db} />
+        <NavBar firebaseAuth={auth} />
 
         <Routes>
           <Route exact path="/" element={<StartPage />} />
