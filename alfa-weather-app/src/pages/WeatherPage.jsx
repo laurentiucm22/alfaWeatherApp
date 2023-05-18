@@ -4,7 +4,7 @@ import Container from "../UI/Container";
 
 const WeatherPage = () => {
   return (
-    <Container className="flex justify-center bg-sky-400">
+    <Container className="flex flex-col md:flex-row">
       <CurrentWeather />
     </Container>
   );

@@ -77,19 +77,15 @@ const Search = () => {
   };
 
   useEffect(() => {
-    const storedCity = localStorage.getItem("lastCity");
+    const storedLastCity = localStorage.getItem("lastCity");
 
     const handleLocalStoredData = async () => {
-      if (!storedCity) {
-        navigate("/");
-        return;
-      }
+      dispatch(isLoadingPage(true));
 
       try {
-        const prevCity = JSON.parse(storedCity);
-        navigate("city-weather");
+        const prevCity = JSON.parse(storedLastCity);
+        navigate("/city-weather");
 
-        dispatch(isLoadingPage(true));
         await dispatch(currentWeatherActions(prevCity));
         // await dispatch(weatherForecastActions(prevCity));
 
@@ -99,8 +95,11 @@ const Search = () => {
       }
     };
 
-    handleLocalStoredData();
-  }, [navigate, dispatch]);
+    if (storedLastCity !== null) {
+      handleLocalStoredData();
+    }
+    return;
+  }, [dispatch, navigate]);
 
   return (
     <Container className="flex flex-col items-center justify-center w-72 custome-form md:w-96">
@@ -108,7 +107,7 @@ const Search = () => {
         <SearchForm searchValue={searchValue} setSearchValue={setSearchValue} />
       )}
 
-      <ul className="w-full w-">
+      <ul className="w-full">
         {searchCityList.length > 0 && (
           <SearchResults onSelectedCity={onSelectedCity} />
         )}
